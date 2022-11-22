@@ -1,0 +1,48 @@
+
+
+Cloud Migration:
+
+The Process of transferring data, applications, workloads from On-premesis to Cloud Premesis.
+
+
+Why Cloud Migration?
+
+- Operational Costs
+- Workforce Productivity
+- Cost Avoidance
+- Operational Resilience
+- Business Agility
+
+
+
+Migration Strategies: 6 R's
+
+- Re-host = Lift & Shift
+- Re-platform = Lift, Tinker & Shift
+- Re-purchase = Drop & Shop
+- Re-architect = Redesign
+- Retain = Do nothing for now or Revisit
+- Retire = Decommission or Get ride of it.
+
+
+
+Things to take care before Core Migration:
+
+- Cost Vs Time Line
+
+- OnPremesis Cost:
+	- Server Costs
+	- NW Costs
+	- Storage Costs
+	- IT Labour Costs
+	- Software/License Costs
+	- Space Costs
+
+- Plan => Migrate => Run
+	- Strategy & Design
+	- Migrate & Transition
+	- OPerations & Improvement.
+
+
+
+

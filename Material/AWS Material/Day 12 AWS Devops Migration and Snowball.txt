@@ -1,0 +1,7 @@
+01:03:03	Manimaran:	https://www.virtualbox.org/wiki/Downloadshttps://www.youtube.com/watch?v=57LO476HLvc&list=PLqz0JGiufLh472htTG8iOzfQUwOTHpXPg&index=6https://www.youtube.com/watch?v=_yn90mcOrAY&list=PLqz0JGiufLh472htTG8iOzfQUwOTHpXPg&index=7
+01:03:14	Manimaran:	for virtual machine crwation
+01:07:12	Manimaran:	https://releases.ubuntu.com/20.04/
+01:07:17	Manimaran:	for ubuntu OS Image
+01:49:07	jai shankar.s:	clear
+01:49:12	Aravind Kumar:	clear sir
+01:49:18	Ram Kumaran:	yes bro

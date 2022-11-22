@@ -1,0 +1,49 @@
+                EC2- Part - 3
+                *************
+
+
+
+1. Static IP -(how to map static IP using EIP(Elastic IP))
+   * Default for one account and one AZ we can create 5 EIP's
+   * want more go to support centre and raise a request under "service limit increse"
+2. Add Extra Storgae or Extra Volume (EBS- Elastic Block Store)
+3. Modify the volume size - upto 16 TB (Increase or Decrease)
+   (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html)
+4. Snapshot (Take Backup of specific drive/volume)
+   *Migrate the date into different machine(new machine) using snapshot
+
+ Linux
+
+Windows                 Linux
+*******                 *****
+drive			file system
+30gb-c:/		8gb-/dev/xvda/
+                            /dev/xvdb/
+                            /dev/xvdc/
+NTFS                    ext4
+
+
+
+Linux command:
+**************
+1.# df -h (to view the linux file system)
+add volume and attach to the linux machine
+2.# lsblk (to list the file system)
+3.# file -s /dev/xvdb(to view the file inside the drive or to check the volume has any data.) 
+  *output-/dev/xvdf: data - it means there is no data inside the drive
+4.# mkfs -t ext4 /dev/xvdb (format the volume to ext4 filesystem)
+5.# mkdir demo (to create folder or directory)
+6.# mount /dev/xvdb demo (mount the file(/demo) to the directory(/dev/xvdf))
+  # df -h
+7.# resize2fs /dev/xvdb (to resize the volume to take effect)
+  # ps -ef | grep httpd
+
+**********************************************************************************************
+Task:
+TASKS?How to assign a static ip to running instance?
+How to decrease a volume size?How to Increase a RAM size?
+How will you perform snapshot in linux machine?
+How will you retrieve you data if you lost your PEM-KEY?
+What is AMI?How to create customized AMI?
+What is the difference between AMI & SnapShot?
+In one region maximum how many security groups can we create?

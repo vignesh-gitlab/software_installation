@@ -1,0 +1,15 @@
+#!/bin/bash
+yum update -y
+yum install httpd -y
+mkdir /var/www/html/facebook/
+echo "Hi this facebook instance" > /var/www/html/facebook/index.html
+service httpd start
+chkconfig httpd on
+
+#!/bin/bash
+yum update -y
+yum install httpd -y
+mkdir /var/www/html/orkut/
+echo "Hi this orkut instance" > /var/www/html/orkut/index.html
+service httpd start
+chkconfig httpd on

@@ -1,0 +1,230 @@
+                                             CDCP
+                                             ****
+
+
+
+Step 1:(Create IAM Roles)
+a.Create IAM Role for EC2 instance to access S3. 
+   Select EC2 as AWS service and assign AmazonS3FullAccess permission
+   (This Role must be attached to the EC2 instance (webserver) later)
+
+b.Create another IAM Role for CodeDeploy access.
+   Select CodeDeploy as AWS Service and assign AWSCodeDeployRole permission.
+   Assign a name to role . This role must be used while 
+   the CodeDeploy deployment is configured in a later stage
+------------------------------------------------------------------------------------------------ 
+Step 2:(Create EC2 machine & IAM user account for developer)
+
+a.Create an IAM user and assign Programmatic access. 
+  He should be has "AmazonS3FullAccess" and "AWSCodeDeployFullAccess" permissions
+
+b.Launch a new EC2 instance(linux). This is used by the Developer for the code creation
+  and manualy pushing the code to S3 bucket
+
+c.Login into developer machine and execute "aws configure" command using Access/Secret keys.
+
+--------------------------------------------------------------------------------------------------
+Step 3:(Install and prepare the CodeDeploy agent on webserver)
+a.Launch a new EC2 instance(Linux). Attach the role ec2 to s3 full access in step 3(the role which you created already).
+  This is used for deploying webserver with CodeDeploy. Create Add Tag name with value for the instance.
+  The deployment group membership is identify the EC2 instance using this Tag name only. open the http - 80 port.
+
+b.Login into the webserver EC2 and switch to root user(#sudo su - root)
+  install the below command.
+  
+Install codedeploy-agent setup command one by one.
+************************************************************************  
+# yum update -y
+# yum install ruby -y (codedeploy is build by ruby that's why we installing ruby)
+# yum install wget -y
+# wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
+# chmod +x install (Giving Execution permission)
+# ./install auto (Execution command)
+# service codedeploy-agent status
+************************************************************************
+-----------------------------------------------------------------------------------------------------
+step 4: 
+a.Login to developer machine change to sudo su - root user and make
+directory deploy_dir(#mkdir deploy_dir) and move into (#cd deploy_dir), then make another directory
+samleapp(#mkdir sampleapp) and move into that directory (#cd sampleapp).
+
+EX:
+[root@ip-172-31-33-195 ~]# mkdir deploy_dir
+[root@ip-172-31-33-195 ~]# cd deploy_dir/
+[root@ip-172-31-33-195 deploy_dir]# mkdir sampleapp
+[root@ip-172-31-33-195 deploy_dir]# cd sampleapp/
+
+make sure you are in same working directory using "pwd" command
+[root@ip-172-31-33-195 sampleapp]# pwd
+/root/deploy_dir/sampleapp
+
+make file index.html in that copy the below content and save it.(nano is a Editor software)
+[root@ip-172-31-33-195 sampleapp]# nano index.html(paste the below content press ctrl+o enter and ctrl+x enter)
+***********
+<html>
+<h2> Sample App Version 1 </h2>
+</html>
+***********
+
+----------------------------------------------------------------------------
+
+make directory under same director(#mkdir scripts)
+[root@ip-172-31-33-195 sampleapp]# mkdir scripts
+[root@ip-172-31-33-195 sampleapp]# cd scripts/
+
+create 3 file under scripts directory.
+touch httpd_install.sh
+touch httpd_start.sh
+touch httpd_stop.sh
+
+[root@ip-172-31-33-195 scripts]# nano httpd_install.sh
+************************
+#!/bin/bash
+yum install httpd -y
+************************
+[root@ip-172-31-33-195 scripts]# nano httpd_start.sh
+************************
+#!/bin/bash
+systemctl start httpd
+systemctl enable httpd
+************************
+[root@ip-172-31-33-195 scripts]# nano httpd_stop.sh
+************************
+#!/bin/bash
+systemctl stop httpd
+systemctl disable httpd
+************************
+[root@ip-172-31-33-195 scripts]# 
+[root@ip-172-31-33-195 scripts]#chmod +x *
+([root@ip-172-31-33-195 scripts]# ls -lrt (make sure changed to execution mode)
+total 12
+-rwxr-xr-x 1 root root 34 Sep 30 03:05 httpd_install.sh
+-rwxr-xr-x 1 root root 58 Sep 30 03:05 httpd_start.sh
+-rwxr-xr-x 1 root root 58 Sep 30 03:06 httpd_stop.sh)
+
+one step exit from current directory
+[root@ip-172-31-33-195 scripts]# cd ..
+[root@ip-172-31-33-195 sampleapp]#
+
+-------------------------------------------------------------------------------------------------------
+
+make file appspec.yml in that copy the below content and save it.
+[root@ip-172-31-33-195 sampleapp]# nano appspec.yml(paste the below content press ctrl+o enter and ctrl+x)
+***************
+version: 0.0
+os: linux
+files:
+ - source: /index.html
+   destination: /var/www/html/
+hooks:
+ BeforeInstall:
+  - location: scripts/httpd_install.sh
+    timeout: 300
+    runas: root
+  - location: scripts/httpd_start.sh
+    timeout: 300
+    runas: root
+ ApplicationStop:
+  - location: scripts/httpd_stop.sh
+    timeout: 300
+    runas: root
+****************
+
+-------------------------------------------------------------------------------------------------
+step:5(Create Application & Push the code to S3 bucket) 
+
+a.Create S3 bucket for uploading the code, I have named it as "codedeploy-190822"
+
+[root@ip-172-31-33-195 sampleapp]#aws deploy create-application --application-name sampleapp
+(once created check whether application created or not in aws console under depoly in application)
+
+Now upload the code and push the code.
+
+[root@ip-172-31-33-195 sampleapp]#aws deploy push --application-name sampleapp --s3-location s3://codedeploy-190822/sampleapp.zip
+
+(Now browse the s3 bucket make sure sampleapp.zip is present)
+-----------------------------------------------------------------------------------------------
+step:6
+
+a- Go to AWS web console in Codedeply under Application
+b- Select "sampleapp" and click "Create deployment group" from Deployment groups tab.
+c- Enter the values like below and leave the other parameters default
+Enter a deployment group name: mygrp (your wish)
+Choose a service role:  cdrole (role which you created)
+Deployment type: in-place
+Environment configuration: choose Amazon EC2 instances
+Key as AppName  Value as DemoApp (This is your webserver tag name)
+Install AWS CodeDeploy Agent : choose Never
+Load balancer:  uncheck Enable load balancing
+
+Click Create Deployment Group to finish creation of deployment group
+-----------------------------------------------------------------------------------------------
+step:7-Create Deployment which pushes code to the webserver
+
+In the sampleapp click Create deployment. Enter values like below. Other parameter can be kept default
+Deployment group : mygrp
+Revision type: My application is stored in Amazon S3
+Revision location : s3://select_location_from_list(choose your bucket)
+Revision file type: .Zip
+
+Click create Deployment
+
+once Deployment status Succeeded!!!!
+-----------------------------------------------------------------------------------------------
+step:8-Testing the Configuration
+
+Now access the public Ip address of the webserver from the browser and see the output.
+
+
+--------------------------------------------------------------------------------------------------------
+Code pipeline
+
+
+step:9. Create pipeline under pipelines. (go to console)
+
+a. Give name for pipeline and select service role as New service role then click next.
+b. select your source as S3(in our case S3) and select source bucket and type your object name and click next.
+c. skip the build stage
+d. In Add deploy stage select AWS CodeDeploy-select your region-select your Application name-select your
+   Deployment group. click next.
+e. Finally create Pipeline.
+   
+you will get source and Deploy succeeded !!!!
+
+If any error:
+-----------------------------
+1. (if not then check your bucket whether version is enabled or not. once enabled then give retry.)
+
+2. choose your bucket permission as "ACLs disabled (recommended)"
+---------------------------------
+
+Now successfully created pipeline!!!.
+
+go to developer machine edit your index.html and do some update then save and exit.
+
+now zip sampleapp.zip
+[root@ip-172-31-33-195 sampleapp]#zip -r ../sampleapp.zip .
+
+[root@ip-172-31-40-90 sampleapp]# cd .. (exit from current directory)
+[root@ip-172-31-33-195 deploy_dir]#aws s3 cp sampleapp.zip  s3://codedeploy-190822
+
+once upload is done the pipeline is successfully created.
+ 
+once completed check refresh your browser with your webserver machine IP:
+ 
+!!!!!
+*************************************************************************************************
+
+Task:
+
+sns: in codepipeline --- deploy --- Applications --- choose notify
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+yum update -y
+yum install httpd -y
+echo "Hi this facebook instance" > /var/www/html/index.html
+service httpd start
+chkconfig httpd on

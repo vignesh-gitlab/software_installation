@@ -1,0 +1,5 @@
+https://aws.amazon.com/premiumsupport/knowledge-center/start-stop-lambda-eventbridge/
+
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html
+
+https://www.freeconvert.com/time/ist-to-utc
