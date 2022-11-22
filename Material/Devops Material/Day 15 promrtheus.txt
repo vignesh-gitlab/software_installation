@@ -1,0 +1,104 @@
+***PROMETHEUS & GRAFFANA***
+
+INFRA MONITORING
+
+SERVER -- EC2
+
+------------------
+
+OPEN SOURCE 
+
+PULL MECHANISM
+
+NODE EXPORTER
+
+TSDB -- TIME SERIES DB
+
+-------------------
+
+STEP - 1 : INSTALLATION	[ UP AND RUN PROMETHEUS AND NODE EXPORTER IN MASTER AND SLAVE RESP.]
+STEP - 2 : CONFIGURATION	[ EDIT PREMETHEUS .yml FILE IN MASTER SERVER AND ADD TARGET ]
+STEP - 3 : CHANGE IT INTO AS BACKGROUND SERVICE BY MOVING INTO bin AND CREATING prometheus.service IN RESP. PATH 
+
+-------------------
+
+MASTER PROMETHEUS SERVER
+
+
+cd /opt/
+wget __link
+tar -xvzf prome__fimename
+cd prome___
+
+
+cp -r . /usr/local/bin/prometheus
+vi /etc/systemd/system/prometheus.service     [ TO RUN AS A BACKGROUND SERVICE ]
+
+[Unit]
+Description=Prometheus Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/prometheus/prometheus --config.file=/usr/local/bin/prometheus/prometheus.yml
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+NODE SERVERS
+
+
+cd /opt/
+wget __link
+tar -xvzf node__fimename
+cd node___
+./node_exporter      :9100
+
+
+
+
+
+https://github.com/prometheus/prometheus/releases/download/v2.36.2/prometheus-2.36.2.linux-amd64.tar.gz
+
+
+
+-------------------------------------------------
+
+To Run Node_Exporter as Background Service
+
+
+cp -r . /usr/local/bin/node_exporter
+vi /etc/systemd/system/node_exporter.service     [ TO RUN AS A BACKGROUND SERVICE ]
+
+[Unit]
+Description=Node Exporter Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node_exporter/node_exporter 
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+---------------------------------------------------
+
+
+
+To Run Grafana as Background Service
+
+
+cd /usr/local/bin/grafana-server/
+[ TO RUN AS A BACKGROUND SERVICE ]
+
+cd /usr/local/bin/grafana-server/bin/grafana-server
+./grafana-server &
+press ctrl+c to run in background

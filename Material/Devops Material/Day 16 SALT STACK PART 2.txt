@@ -1,0 +1,181 @@
+***SALT STACK***
+----------------
+
+MULTIMASTER ARCHITECTURE
+
+CONNECT MASTER AND MINION
+
+sudo salt 'testdev' test.ping
+
+STATEMENT 1 ---> sudo salt --> It is default
+
+STATEMENT 2 ---> target --> testdev (individual name) or all by (*) 
+
+INTELLIGENT TARGETTING ---> PCRE/CM
+PCRE ---> Perl Compatible Regular Expressions 
+CM ---> COMPOUND MATCHERS
+
+STATEMENT 3 ---> FUNCTION (test.ping) --> NEARLY WE HAVE AROUND 20K FUNCTIONS
+
+TO LIST ALL THE FUNCTION USE ---> (sudo salt 'testdev' sys.list_functions)
+
+---------------------------------------------------------------------------
+PACKAGE INSTALLATION:
+
+TO INSTALL ANY PARTICULAR PACKAGE USE --> (sudo salt 'testdev' sys.list_functions pkg)
+
+TO INSTALL GIT IN MINION PASS THE COMMAND FROM MASTER USE ---> (sudo salt 'testdev' pkg.install git)
+
+NOW CHECK IN MINION BY USING --> (git --version)
+
+TO REMOVE GIT USE --> (sudo salt 'testdev' pkg.remove git)
+
+---------------------------------------------------------------------
+SERVICE CHECKS:
+
+TO CHECK USE --> (sudo salt 'testdev' sys.list_functions service)
+--------------------------------------------------------------------
+
+DIRECTORY CREATION :
+
+(sudo salt 'testdev' cmd.run 'mkdir -p /tmp/folder1')
+
+TO LIST IN MASTER USE --> ( sudo salt 'testdev' cmd.run 'ls -lrth /tmp' )
+TO LIST IN MINION USE --> ( ls -lrth /tmp )
+
+FOR DIRECTORY CREATION AND TO LIST USE:
+
+(sudo salt 'testdev' cmd.run 'mkdir -p /tmp/folder2;ls -lrth /tmp')
+
+NOW FOR VICE VERSA USE :
+
+(sudo salt 'testdev' cmd.run 'ls -lrth /tmp;mkdir -p /tmp/folder3')
+
+***DIRECTORY WONT BE SHOWN SO AGAIN USE THE ABOVE COMMAND***
+
+IT IS BECAUSE SALT STACK PERFORMS FUNCTION BY FUNCTION
+
+------------------------------------------------------------------
+
+SALT STACK ---> AGENTBASED --> BOTH PUSH & PULL
+
+GRAINS (G) --> PULL 
+
+FOR PULLING THE STATIC INFO ABOUT MINION USE:
+
+(sudo salt 'testdev' grains.items)
+
+TO PULL A PARTICULAR INFO USE :
+
+(sudo salt 'testdev' grains.item os)
+
+----------------------------------------------------------------
+
+COMPOUND MATCHERS : IT BASICALLY USES "AND" & "OR"
+C --> COMPOUND MATCHERS
+GRANULAR BASED SEARCHING
+
+https://docs.saltstack.com/en/latest/topics/targeting/compound.html
+
+AND:
+(sudo salt -C 'testdev123 and G@os:ubuntu' test.ping)
+(sudo salt -C 'testdev and G@os:ubuntu' test.ping)
+
+OR:
+(sudo salt -C 'testdev123 or G@os:ubuntu' test.ping)
+
+
+(salt -C 'L@testprod,testcat or test* ' test.ping)
+
+------------------------------------------------------------------
+PCRE ---> Perl Compatible Regular Expression
+E --> PARTICULAR WORD SEARCHING 
+
+(salt -E '.t*' test.ping)
+
+TO INSTALL ANY PACKAGE :
+
+(salt -E '.t*' pkg.install git)
+
+CHECK IN MINION :
+
+(git --version)
+
+-----------------------------------------------------------------
+YAML : ADHOC COMMANDS --> RUNBOOKS OR PLAYBOOKS
+
+TO EXECUTE THROUGH YAML WE HAVE TO WRITE RUNBOOKS OR PLAYBOOKS
+
+GO TO ---> (vi websrvr.sls)
+sls --> "Salt State System" or "Salt State File" 
+
+PASTE :
+
+'install webserver':
+  pkg.installed:
+    - name: apache2
+  service.running:
+    - name: apache2
+    - enable: True
+
+TO CHECK THE STATUS :
+
+(sudo salt 'testdev' state.sls websrvr)
+
+IT WILL THROW SOME ERROR BECAUSE STATE FILE SHOULD BE EXECUTED IN A PARTICULAR PATH OR BASE
+SO, CREATE A DEFAULT DIRECTORY FOR SALT
+
+(mkdir /srv/salt)
+
+THEN MOVE THE FILE TO THAT DIRECTORY BY USING :
+
+(mv websrvr.sls /srv/salt)
+
+THEN AGAIN RUN :
+
+(sudo salt 'testdev' state.sls websrvr)
+
+NOW GO AND CHECK IN MINION WHETHER APACHE INSTALLED :
+
+(systemclt status apache2)
+
+TO REMOVE APACHE USE:
+
+(sudo salt 'testdev' pkg.remove apache2)
+
+----------------------------------------------------------
+
+MULTIMASTER ARCHITECTURE:
+
+CREATE A NEW UBUNTU SERVER DO THE FOLLOWING STEPS TO INSTALL SALT AND INTEGRATE WITH MINION BY USING:
+
+master:
+  - ip address (active)
+  - ip address (passive)
+
+SAVE THE FILE AND RESTART THE MASTER
+
+(sudo service salt-minion restart)
+
+THEN GO TO MASTER CHECK BY USING:
+
+(sudo salt-key)
+
+ACCEPT BY:
+
+(sudo salt-key -a ... )
+
+NOW PING :
+
+(sudo salt '*' test.ping)
+
+
+
+
+
+
+
+
+
+
+

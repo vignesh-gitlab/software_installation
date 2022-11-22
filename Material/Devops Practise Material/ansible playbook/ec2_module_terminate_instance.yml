@@ -1,0 +1,9 @@
+- hosts: localhost
+  remote_user: ec2-user
+  become: yes
+  tasks:
+   - name: Terminate an Instance # Terminate an Running Instance
+     ec2:
+      region: ap-south-1
+      state: 'absent'
+      instance_ids: "{{ ['i-0ac5b0851eb103fe8'] }}"

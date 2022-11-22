@@ -1,0 +1,65 @@
+SPLUNK --- MONITORING TOOL
+
+
+APP LOG -- SYS GEN LOG -- MONITORING/ANALYSING
+
+
+LOG ?
+
+EVENT -- A TRACK OR THE EVENT
+
+
+================================================
+
+
+SPLUNK -- ENTERPRISE PRODUCT  --- 60 DAYS FREE TRIAL
+
+SEARCH HEAD -- KEYWORD --
+INDEXERS -- FASTER SEARCH / INDEXES
+FORWARDER -- SLAVE MACHINES / SPLUNK FORWARDER
+
+
+=================================================
+
+
+INSTALLATION     ---    MASTER [SPLUNK DEDICATED SERVER] / SLAVE [SPLUNK FORWARDER] -- n NO. SLAVES  -- UP AND RUN
+
+CONFIGURATION --- # PORT ENABLE[MASTER] -- ADDING FORWAREDR[SLAVE] TO THE PORT -- IP[MASTER MAC]
+                                 # DEFINING MONITORING PATH [ /var/log/ ]
+
+DASHBOARD         ---    SURFING THE DASHBOARD
+
+
+=================================================
+
+
+SPLUNK DEDICATED SERVER
+
+sudo -i
+cd /opt
+wget -O splunk-9.0.0-6818ac46f2ec-Linux-x86_64.tgz "https://download.splunk.com/products/splunk/releases/9.0.0/linux/splunk-9.0.0-6818ac46f2ec-Linux-x86_64.tgz"
+tar -xvzf splunk-9.0.0-6818ac46f2ec-Linux-x86_64.tgz
+cd splunk/bin/
+./splunk start
+./splunk enable listen 9997
+
+
+
+---------------------------------------------------------------------------------------------------
+SPLUNK FORWARDER
+
+sudo -i
+cd /opt
+wget -O splunkforwarder-9.0.0-6818ac46f2ec-Linux-x86_64.tgz "https://download.splunk.com/products/universalforwarder/releases/9.0.0/linux/splunkforwarder-9.0.0-6818ac46f2ec-Linux-x86_64.tgz"
+tar -xvzf splunkforwarder-9.0.0-6818ac46f2ec-Linux-x86_64.tgz
+cd splunk/bin/
+./splunk start
+./splunk add forward-server <masterIP>:9997
+
+ec2-user]# cp syslog /var/log/
+bin]# ./splunk add monitor /var/log/syslog -index main
+
+
+
+
+

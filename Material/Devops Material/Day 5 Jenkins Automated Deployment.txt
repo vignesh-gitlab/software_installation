@@ -1,0 +1,98 @@
+Automation Deployment:
+
+	It is a process of Automating the Deployment process in a Continuous Delivery System.
+
+
+Main Stages in Continuous Delivery & Deployment Pipelines:
+
+
+Build --> Deploy --> Test --> Release
+
+- These are Chained Processes, 
+- It means when the Build is success, then only Deploy will get started, 
+- Same like seeing the success of Deployment, the Testing happens. 
+- Also after every job, will have a notification, which tell us about its status
+
+This is called as "Continuous Integrated Sytem"
+
+
+Step 1 -- Start the Jenkins and login into the console
+
+Step 2 -- Install Deploy Plugins called as "Deploy to container"
+
+Step 3 -- Create a Build Job in Jenkins
+
+Step 4 -- Add Post build Action - Deploy war/ear to container, Choose container, credentials.
+
+Step 5 -- In tomcat-users.xml [under /opt/apache-tomcat-7.0.91/conf] add user for DEPLOYMENT [Install TOMCAT before that]
+
+   <role rolename="manager-gui"/>
+   <role rolename="manager-script"/>
+   <role rolename="manager-jmx"/>
+   <role rolename="manager-status"/>
+   <user username="admin" password="admin" roles="manager-gui,manager-script,manager-jmx,manager-status"/>
+   <user username="deployer" password="deployer" roles="manager-script"/>
+
+
+Step 6 -- Place the war file in the appropirate path.
+		eg: /var/lib/jenkins/workspace/AutoDeployment/sample.war
+
+Step 7 -- Run & Validate.
+
+Step 8 -- WAR should be available under the tomcat's webapps folder.
+
+============================================================================================
+
+TOMCAT Installation:
+
+Step 1 -- Goto the link https://tomcat.apache.org/download-70.cgi & donwload the binaries[tar.gz under CORE].
+
+Step 2 -- Once the file [apache-tomcat-7.0.91.tar] is downloaded, move it to the server.
+
+Step 3 -- Copy it to the /opt location in the server.
+
+Step 4 -- untar the file -> tar zxvf <filename>
+
+Step 5 -- delete the .gz file. 
+
+Step 6 -- Goto to the bin path and start tomcat - startup.sh
+
+============================================================================================
+
+logs--->Apache Tomcat related logs
+webapps--->Deployed application available
+conf--->Apache related configuration file
+bin---> Apache start and stop available here
+
+
+
+===============================================================
+
+Jenkins Pre-Requisite: Java Installation:
+
+================================================
+
+1. sudo add-apt-repository ppa:webupd8team/java
+2. sudo apt-get update
+3. sudo apt install openjdk-8-jdk
+4. java -version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

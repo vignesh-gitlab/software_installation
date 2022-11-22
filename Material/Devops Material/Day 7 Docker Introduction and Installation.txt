@@ -1,0 +1,41 @@
+****************Docker D1 ********************
+
+Prerequisite
+OS should be 64 bit
+Linux kernel ver 3.10 or greater
+
+STEP 1 - Connect to Linux system ( create ec2(ubuntu) server via aws console)
+--------------------------------------------------------------------------------------------------------------
+STEP 2 - Install DOCKER
+# sudo -i 		:To login as root
+# apt-get update
+# apt install docker.io -y
+--------------------------------------------------------------------------------------------------------------
+To check Docker Version
+==============================================================================================================
+--------------------------------------------------------------------------------------------------------------
+To Provide info about the container
+==============================================================================================================
+--------------------------------------------------------------------------------------------------------------
+a.# docker images 	: list  images present locally
+b.# docker ps  		: To list running containers
+c.# docker ps -a 	: To list of all containers
+==============================================================================================================
+Docker images 		:Instruction to create/run a container 
+Docker container 	:Created using Docker Images/ insolated environment to run our application
+Docker file 		:Written Instruction to create our own customised image
+Docker hub 		:Online Repository For Docker images 
+===============================================================================================================
+To create a container (here CID refers Container ID)
+
+a.# docker run -itd -p "80:80" httpd 		:(Create a httpd contianer running on port 80 to verify "IP:80"
+b.# docker exec -it CID /bin/bash 		:(Using this command we can go insdie the container using bash terminal )
+c.# docker stop CID 				:(To stop running container)
+d.# docker rm CID 				:(To remove the stopped container)
+e.# docker rm -f CID 				:(To remove the running container forcefully)
+f.# docker rmi 					:(To remove the unused Docker image from our server)
+g.# docker stats 				:(Provide complete information about all the container )
+h.# docker top CID 				:(Provide informaton about one particular container)
+i.# docker inspect CID 				:(Provide information abt one particular container in detailj.# docker logs CID 				:(Provide complete log of a container)
+================================================================================================================
+

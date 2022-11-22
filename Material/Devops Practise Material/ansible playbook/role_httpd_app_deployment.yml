@@ -1,0 +1,9 @@
+- name: Install apache
+  yum: 
+   name: httpd
+   state: latest
+- name: Replace default index.html
+  template: src=../templates/index.html.j2 dest={{ target_dir }}/index.html mode=0777 owner=root group=root
+  notify:
+   - restart apache
+

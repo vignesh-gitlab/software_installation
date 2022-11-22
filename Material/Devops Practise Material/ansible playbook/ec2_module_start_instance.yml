@@ -1,0 +1,16 @@
+- hosts: localhost
+  remote_user: ec2-user
+  become: yes
+  tasks:
+   - name: Launch an Instance
+     ec2:
+      key_name: Lin_Mum_2310
+      instance_type: t2.micro
+      image: ami-062df10d14676e201   #ubuntu machine
+      region: ap-south-1
+      wait: yes
+      count: 1
+      vpc_subnet_id: subnet-07e093429dc0030ef
+      assign_public_ip: yes
+      instance_tags:
+       Name: ec2_ansible

@@ -1,0 +1,214 @@
+a.Volumes
+b.Container access (how to give container access to third party)
+c.How to link container
+d.docker compose
+f.docker network
+=========================================================================
+a.volumes
+
+From root
+
+	# cd /opt/
+
+	# ls-lrth
+new folder in opt 
+ 	# mkdir myhtml
+
+	# cd myhtml
+	# ls -lrth
+-------------------------------------------------------------------------
+synchronize replication
+--
+docker run -itd -p "80:80" --name webserver1  
+	-v "/opt/hi:/usr/local/apache2/htdocs" httpd
+------------------------------------------------------------------------
+	# docker images
+	# docker ps -s
+
+	# /opt/myhtml
+
+	# vi index.html
+if we modify the local file, same will be reflected in the container 
+------------------------------------------------------------------------
+	# docker ps -a
+	# docker exe -it conid /bin/bash
+
+	# ls -lrth
+
+	# cd htdocs/
+	# vi index.html (modifying this file in container)
+
+echo "hello new code" > index.html  (edited using echo, vi is not inside container)
+
+	# exit
+===================================================================================
+between container hoW to sink data
+-----------------------------------------------------------------------------------
+*container access*
+
+*volume* and *container access*  
+
+A.splunk want to monitor log inside my container 
+----
+step 1.we gonna crate dummy container 
+
+open ssh softwer is installed inside the container to give acces to user 
+
+--->Dockerfile for this
+
+container access Dockerfile
+
+	# cd /opt/
+	# mkdir myhtml
+	# vi Dockerfile (for creating docker file)
+copy paste this 
+
+FROM ubuntu:16.04
+MAINTAINER mithran
+RUN apt-get update
+RUN apt-get install openssh-server -y
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN echo 'root:root123' | chpasswd
+RUN mkdir /var/run/sshd
+CMD ["/usr/sbin/sshd", "-D"]S
+
+step2 Run this file to create docker image named as containeraccess
+
+--- docker build -t containeraccess /opt/myhtml
+====================================================================
+Docker Commant to Give Read only Access to a containers
+
+To create a container with name as webserver , logs volume is assigned to sink in this container
+
+--  docker run -itd -p "80:80" -v "/usr/local/apache2/logs" --name "webserver" httpd
+
+To Give Read only access to the splunk user run this command
+
+---- docker run -itd -p "2222:22" --volumes-from webserver:ro containeraccess
+
+
+After this 
+
+Copy public ip of the machine paste in putty with ssh port as 2222
+
+user name = root
+password = root123
+
+go to this directory
+
+cd /usr/local/apache2/logs
+
+ls -lrt
+
+log file
+
+Now got to EC2 enter inside the container webserver1
+
+docker exec -it webserver1 /bin/bash
+
+inside that container 
+
+cd /usr/local/apache2/logs
+
+touch hi
+==============================================================
+Requirement --> LINK
+
+2 container need to communicate with each other (eg Wordpress application)
+
+link--(it is old )
+
+	# docker run -itd mysql:5.5
+
+
+	# dosker ps -a
+------------------------------------------------------------------------
+	# docker ps -a (Container failed details will be available in logs)
+
+	# docker logs conid
+
+Run a new container with this requirement
+
+	# docker run -itd --name db -e MYSQL_ROOT_PASSWORD=DK123 mysql:5.5
+
+***-e is environment variable***
+
+eg export age=25
+this is linux command
+
+meaning for this 
+echo "myage is $age"
+myage is 25
+
+docker ps -a
+------------------------------------------------------------------------
+	# docker run -itd --name webserver2 --link db:mysql -p "8080:80" wordpress
+
+IF 2 container want to communicate with each other we use link
+
+now hit IP address in browser the wordpress app is running
+--------------------------------------------------------------------------
+
+docker run 
+
+========================
+
+new concept is networking (bridge networking)
+------------------------
+Docker compose (yml)
+
+***for running multiple line command  i will not use CLI
+instead we used to write yml file, in that the command we type is given as script
+
+***docker compose is a tool we need to install it 
+it doesn't comes with docker
+
+file format for docker compose 
+	# vi docker-compose.yml
+copy paste the data
+
+	# docker ps -a 
+
+	# docker rm -f con id 
+
+	# docker-compose up -d
+	# docker-compose ps
+	# docker network ls 
+
+
+NETWORK ID     NAME      DRIVER    SCOPE
+6ccb6120c20f   bridge    bridge    local
+4683b2248251   host      host      local
+23ad32b93677   none      null      local
+
+docker compose will create its own network using bridge
+
+
+https://www.linode.com/docs/guides/wordpress-with-docker-compose/
+
+
+f15a309510f3   compose_default   bridge    local
+172.18.0.0/16-- CIDR
+================
+172.18.0.1
+
+172.18.0.3
+
+172.18.0.2
+==============
+ 
+ 
+172.17.0.1 
+172.17.0.4
+
+6ccb6120c20f   bridge            bridge    local
+f15a309510f3   compose_default   bridge    local
+4683b2248251   host              host      local
+23ad32b93677   none              null      local
+
+
+
+
+
+
+

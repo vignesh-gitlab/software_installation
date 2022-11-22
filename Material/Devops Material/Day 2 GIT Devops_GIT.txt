@@ -1,0 +1,171 @@
+
+DEVOPS: Cost Reduction, Time Reduction, Effort Reduction
+
+GIT
+===
+
+Written in: C, Perl, Python
+
+Initial release: 7 April 2005; 17 years ago
+
+Stable release: 2.37.3 / 30th Aug 2022
+
+Developer: Linus Torvalds yr:2005
+
+- Git is a free, open source distributed version control system tool.
+- Designed to handle everything from small to very large projects with speed and efficiency
+- It was created by "Linus Torvalds" in 2005 to develop Linux Kernel.
+- “Git”, which is an offensive English slang meaning “A Stupid Person”.
+- Developer friendly tool - Which has the functionality, performance, security and flexibility.
+
+Version Control is the management of changes to documents, computer programs, large websites and other collection of information.
+There are two types of VCS: 
+- Centralized Version Control System (CVCS)
+- Distributed Version Control System (DVCS)
+
+CVCS: 
+- Uses a central server to store all files 
+- It works on a single repository to which users can directly access.
+Disadvantages:
+- It is not locally available
+- Need to be connected to a network.
+- Any case of the central server getting crashed or corrupted will result in losing the entire data of the project.
+
+DVCS:
+- Systems do not necessarily rely on a central server for storage.
+- Every contributor has a local copy or “clone” [Local Repository] of the main repository.
+- Push/Pull of data allowed apart from Commit/Update.
+Advantage:
+- Very fast, as no Remote rather Clone will be in local.
+- Commit can be done locally.
+- In case of the central server crash, the lost data can be easily recovered from any one of the contributor’s Clone.
+
+Features Of Git:
+
+- Free and open source
+- Speed
+- Scalable
+- Reliable
+- Secure
+- Economical
+- Easy Branching
+
+
+Competitors in VCS:
+- Apache Subversion(SVN)
+- Concurrent Version Systems(CVS)
+- Mercurial 
+- Bit Bucket
+
+Some companies that use Git for version control are: Facebook, Yahoo, Zynga, Quora, Twitter, eBay, Salesforce, Microsoft and many more.
+
+Git – Operations & Commands
+Some of the basic operations in Git are:
+1. Initialize --> git init
+2. Add --> git add <filename>
+3. Commit --> git commit -m <message>
+4. Pull
+5. Push
+
+Some advanced Git operations are:
+* Branching          
+* Merging
+* Rebasing
+
+
+==============================================================================================
+
+
+User Configuration:
+
+git config --global user.name "goutham"
+git config --global user.email "mwgoutham619@gmail.com"
+git config --global core.editor vim
+git config --global core.copression 2
+git config --global diff.tool vimdiff3
+
+
+git merge tool :
+
+git config --global merge.tool vimdiff
+git config --global merge.conflictstyle diff3
+git config --global mergetool.prompt false
+
+
+greenslab1
+
+
+
+
+
+
+
+
+===================================================================
+
+"First Commit"
+"Second Commit"
+"Third Commit"   "3rd Commit"
+"Fourth Commit"  "Final Commit"
+
+
+===================================================================
+
+
+
+
+
+
+
+V1
+V2
+V3
+R1------>
+
+WO
+
+v4
+v5
+v6
+R2----->
+
+
+
+
+
+Day1
+Git 
+merge-->smooth
+
+Day2:
+
+Conflict Merge
+Rebase
+cherry-pick
+
+GITHUB--->Features 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

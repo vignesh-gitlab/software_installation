@@ -1,0 +1,93 @@
+***SALT STACK***
+----------------
+
+CONFIGURATION MANAGEMENT TOOL 
+
+IN LINUX (CLI) TO ADD ONE USER USE ---> useradd goutham --> 2MIN
+
+200 MACHINES
+
+ON-PREM ISSUES FOR CONFIGURATION:
+
+TIME CONSUMPTION
+RESOURCES
+ERROR OCCURENCES
+
+SALT STACK :
+
+PARALLEL MECHANISM 
+SERIAL MECHANISM
+
+===================
+
+ACTIONS BASED ON TOOLS:
+
+SALT STACK ---> PUSH & PULL
+ANSIBLE    ---> PUSH
+CHEF       ---> PULL
+PUPPET     ---> PULL
+
+SALT STACK FOLLOWS :
+
+AGENTBASED  --> BOTH MASTER AND SLAVE SHOULD HAVE SALT  INSTALLED  
+AGENTLESS   --> MASTER ALONE HAVE PARTICULAR PACKAGE INSTALLED
+
+SALT STACK USES YAML SCRIPT
+
+SALT STACK INSTALLATION METHODS :
+
+REPOSITORY METHOD:
+
+LINUX    --> yum
+CENTOS   --> yum
+UBUNTU   --> apt-get
+
+
+BOOTSTRAP METHOD ---> wget or curl
+
+SALT STACK INSTALLATION STEPS: ubuntu
+
+1. login into master and install salt
+2. login into slave ( minion ) and install salt
+3. feed master ip to slave ( minions )
+4. handshaking
+
+STEPS:
+
+MASTER :
+
+1. LOGIN WITH USERNAME AS ( ubuntu )
+2. CONVERT INTO ROOT --> CHECK THE IP NAME WITH COMMAND ( hostname )
+3. GO TO PATH ---> vi /etc/hosts ---> paste the ip ( IT IS NOT MANDATORY )
+4. REBOOT THE MACHINE USING --> init 6 
+5. INSTALL SALT --> ( curl -L https://bootstrap.saltstack.com -o install_salt.sh )
+6. LIST BY USING --> ( ls -lrt )
+7. NOW TO RUN SALT USE --> ( sudo sh install_salt.sh -P -M )
+8. TO CHECK WHETHER SALT IS RUNNING OR NOT USE --->  ( netstat -nltp )
+
+MINION :
+
+1. LOGIN INTO MINION MACHINE
+2. INSTALL SALT ( curl -L https://bootstrap.saltstack.com -o install_salt.sh )
+3. NOW RUN MINION --> ( sudo sh install_salt.sh -P )
+4. TO CHECK USE --> ( netstat -nltp )
+5. TO UPDATE MINION ID AND MASTER GO TO ---> ( sudo vi /etc/salt/minion ) --> UPDATE MASTER IP 
+6. TO RESTART THE MINION USE ---> ( sudo service salt-minion restart )
+
+HANDSHAKING OR INTEGRATION :
+
+1. GO TO MASTER MACHINE USE --> ( sudo salt-key )
+2. UNACCEPTED KEY WILL BE PRESENT 
+3. TO ACCEPT THAT USE --> [ sudo salt-key -a ( UNACCEPTED KEY NAME ) ]
+4. CHECK WHETHER IT IS ACCEPTED OR NOT USE --> ( salt-key )
+5. TO CHECK WHETHER MASTER IS ABLE TO CONNNECT USE --> ( sudo salt '*' test.ping )
+
+
+REPOSITORY METHOD :
+
+1. LAUNCH ONE AMAZON LINUX MACHINE
+2. BROWSE THE GIVEN URL FOR AMAZON LINUX --> ( https://repo.saltstack.com )
+3. AFTER INSTALLATION RESTART THE MINION USING --> ( sudo service salt-minion restart )
+4. TO UPDATE MINION ID AND MASTER GO TO ---> ( sudo vi /etc/salt/minion ) --> UPDATE MASTER IP AND ID
+5. AGAIN RESTART WTIH --> ( sudo service salt-minion restart )
+6. REPEAT THE SAME HANDSHAKING PROCESS IN PREVIOUS PROCESS  

@@ -1,0 +1,149 @@
+Connect to AWS Ubuntu EC2 Instance
+
+sudo su -
+apt update
+vi /etc/hostname
+hostname k8s-management-server
+
+Install AWSCLI
+apt-get update
+curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
+apt install unzip python3 -y
+unzip awscli-bundle.zip
+- optional: apt install python3.10-venv
+
+#Copy the files into/usr/local/bin
+./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+aws --version
+
+Install kubectl on Ubuntu Instance
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+ls -l
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version
+
+
+Install kops on Ubuntu Instance
+
+curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+chmod +x kops-linux-amd64
+sudo mv kops-linux-amd64 /usr/local/bin/kops
+kops version
+
+Create an IAM Role with Route53, EC2, IAM and S3 Full Access
+Create role EC2-
+. policy-Amazon EC2FullAccess,AmazonS3 FullAccess,AmazonRoute53 FullAccess, IAMFullAc
+Name-k8s-role
+
+Attach IAM Role "k8s-role" to Ubuntu Instance
+configure region name only-us-east-1
+aws configure
+
+
+Create a Route53 Private Hosted Zone
+Routeh53 → Hosted zones → Created hosted zone
+Domain Name:ameintu.net
+Type:Private hosted zone for Amazon VPC
+Select Region -US East (N. Virginia) us-east-1
+Select VPC default
+Create hosted zone
+
+Create S3 Bucket
+aws s3 mb s3://demo.k8s.vignesh.net
+
+Expose Environment Variable
+export KOPS_STATE_STORE=s3://demo.k8s.vignesh.net
+
+sudo -i
+swapoff -a
+exit
+strace -eopenat kubectl version
+
+Create ssh-keys before Creating Cluster
+ssh-keygen
+
+Create Kubernetes Cluster Definitions on S3 Bucket
+kops create cluster --cloud=aws --zones=ap-southeast-1a --name=demo.k8s.vignesh.net --dns-zone=vignesh.net --dns private
+kops get cluster
+
+- optional : Changes may require instances to restart: kops rolling-update cluster
+
+Edit Kubernetes Cluster
+kops edit cluster demo.k8s.vignesh.net
+
+Edit Kubernetes Node Instance group
+kops edit ig --name=demo.k8s.vignesh.net nodes-ap-southeast-2c
+
+Edit Kubernetes Master Instance group
+kops edit ig --name=demo.k8s.vignesh.net master-ap-southeast-2c
+ #Change Machine Type -c4.large to t2.micro
+
+Finally Configure Kubernetes Cluster
+kops update cluster --name demo.k8s.vignesh.net --yes --admin
+• It will create below new resources.
+EC2 Instances
+Folders and Files in S3 Bucket
+Create new Roles
+Create Route 53 Records
+Create Launch Configuration
+Create Auto Scaling Group
+Create VPC
+
+Validate Kubernetes Cluster(wait for 10 mins)
+kops validate cluster
+
+kubectl get nodes --show-labels
+
+Connect to the Kubernetes Cluster
+ssh -i ~/.ssh/id_rsa ubuntu@api.demo.k8s.vignesh.net
+exit
+
+kubectl get componentstatuses
+
+List Kubernetes Nodes
+kubectl get nodes
+
+Delete Kubernetes Cluster
+kops delete cluster demo.k8s.vignesh.net --yes --admin
+Delete Resources
+Delete Auto Scaling Group
+Delete Launch Configuration
+Delete S3 Bucket
+Delete Route 53 Hosted Zone
+Delete VPC
+Delete Roles
+Delete EC2 Instances if required
+
+
+
+Login to K8s-management-server
+sudo su-
+
+Go to the Kubernetes Master Server
+ssh -i ~/.ssh/id_rsa ubuntu@api.demo.k8s.vignesh.net
+
+Login with Admin user in Kubernetes Master Server -- NOT WORKING WITH ROOT ..Working with ubuntu
+sudo su-
+hostname master-node
+kubectl get nodes kubectl get pods kubectl get deploy kubectl get service
+
+Copy Kubernetes Files from Git Hub
+git clone https://github.com/amit873/Kubernetes-YAML.git
+Git Hub Path location -cd /home/ubuntu/Kubernetes-YAML/k8s/knote-Application
+
+Deploy Application to Kubernetes EKS Cluster
+kubectl get all
+kubectl apply -f mongo.yaml
+kubectl apply -f knote.yaml
+kubectl get all
+
+Test the Application
+http://<Master-Public-IP>:<NodePort>/
+http://<Nodel-Public-IP>:<NodePort>/
+http://<Node2-Public-IP>:<NodePort>/
+
+Remove the pods
+kubectl delete -f mongo.yaml
+kubectl delete -f knote.yaml
+kubectl get all

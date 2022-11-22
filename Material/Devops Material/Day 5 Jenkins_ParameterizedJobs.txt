@@ -1,0 +1,45 @@
+
+
+
+Parameterized Job:
+
+Step 1: Get into Jenkins Console
+
+Step 2: Create a new Freestyle Project - Para Jobs
+
+Step 3: Configure section
+
+1. Under General section, choose "This project is parameterized"
+
+2. syntax to be like,
+
+$parametername
+	or
+${parametername}
+	or
+"${parametername}"
+
+
+Step 4: Execute the Job & Validate the OutPut.
+
+
+Try with Plug-in --> Extended Choice Parameter Plug-In
+
+Try with Plug-in --> Parameterized Trigger Plugin
+
+
+Parameterized Trigger Job:
+
+Step 1: Get into Jenkins Console
+
+Step 2: Create a new Freestyle Project - Para Jobs
+
+Step 3: Configure section
+
+Step 4: Create a new upstream job - ParaTriggerJobs
+
+Step 5: Goto Configure & choose Trigger Parameterized build from Post-build actions
+
+Step 6: Choose your Downstream project name, Trigger when to build & Predefined parameter as Name=JenkinsAutomation
+
+Step 7: Execute the Upstream Job and check the Downstream Job Console Output

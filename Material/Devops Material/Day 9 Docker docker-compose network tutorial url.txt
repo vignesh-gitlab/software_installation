@@ -1,0 +1,4 @@
+
+	Greens:	https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-22-04
+	Greens:	https://docs.docker.com/network/network-tutorial-standalone/
+	Greens:	https://docs.docker.com/network/network-tutorial-host/

@@ -1,0 +1,27 @@
+
+
+
+
+Step 1 -- Login and check the Jenkins Admin users details
+
+Step 2 -- Under Manage Jenkins --> Manage Users --> Create New users
+
+Step 3 -- Check the User configuration by logging in as USER
+
+Step 4 -- Create & Manage USER ROLES - Login as Admin
+		Role-based Authorization Strategy - Restart Jenkins
+
+Step 5 -- Manage Jenkins -> Configure Global Security -> Authorization -> Select Role-Based Strategy. Apply & Save.
+
+Step 6 -- Login as newly Created User & Check.
+
+Step 7 -- Again login as Admin user -> Manage Jenkins -> MAnage & Assign Roles
+		Global roles - Overall roles
+		Project roles - Related with Projects
+		Slave Roles - Machine level permissions
+
+Step 8 -- Goto Assign Roles and add the users under Global & Project Section and assign roles.
+
+Step 9 -- Create two Project -> DevProject1 & TestProject1.
+
+Step 10 -- Logout as Admin and Check as individual user & Project Access.

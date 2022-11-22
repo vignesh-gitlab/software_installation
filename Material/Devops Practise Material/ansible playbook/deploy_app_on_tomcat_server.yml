@@ -1,0 +1,30 @@
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  tasks:
+   - name: Repo Update
+     yum:
+      name: "*"
+      state: latest
+   - name: Java Installation
+     yum:
+      name: java-1.8.0-openjdk
+      state: present
+   - name: Download Tomcat
+     get_url:
+      url: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.68/bin/apache-tomcat-9.0.68.zip
+      dest: /usr/local
+      mode: "0777"
+   - name: Tomcat Unzip
+     unarchive:
+      src: /usr/local/apache-tomcat-9.0.68.zip
+      dest: /usr/local/bin/
+      remote_src: yes
+      mode: "0777"
+   - name: Run Tomcat
+     shell: nohup /usr/local/bin/apache-tomcat-9.0.68/bin/startup.sh &
+   
+   - name: App Deployment
+     copy:
+      src: ./sample.war
+      dest: /usr/local/bin/apache-tomcat-9.0.68/webapps

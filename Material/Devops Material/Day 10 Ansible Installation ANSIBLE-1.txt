@@ -1,0 +1,216 @@
+ANSIBLE 1 :
+---------
+
+CONFIGURATION MANAGEMENT TOOL
+
+MASTER --> CONTROL NODE
+SLAVE ---> MANAGED NODE
+
+
+PRE REQUISITES:
+
+MASTER:
+
+1. PYTHON TO BE INSTALLED.
+2. ANSIBLE TO BE INSTALLED.
+3. WINDOWS OS CANT BE MASTER.
+
+SLAVE:
+
+1. PYTHON ALONE TO BE INSTALLED.
+2. SLAVE CAN BE ANY OS.
+
+
+CONNECTION B/W MASTER & SLAVE IS DONE THROUGH --> SSH
+
+SSH CONNECTION WILL BE AUTOMATICALLY DONE WHEN WE INSTALL ANSIBLE IN MASTER.
+BUT TO LOGIN INTO OUR SLAVE MACHINES HAVE TO USE EXTERNAL,
+TOOLS LIKE:
+
+1. PAGEANT --> SSH AUTHENTICATION
+2. VISUAL STUDIO CODE --> SINCE ANSIBLE IS IAAC WE HAVE TO USE EDITORS (FOR EXAM., WE CAN USE VI EDITOR OR NANO OR VISUAL STUDIO CODE)
+
+MECHANISM :
+
+ANSIBLE --> PUSH MECHANISM  --> AGENTLESS
+
+ANSIBLE INSTALLATION TWO WAYS:
+
+1. INSTALL WITH PIP  --> USING ( pip )
+2. INSTALL WITHOUT PIP --> DIRECTLY TO OS USING ( yum )
+
+PIP --> PYTHON PACKAGE MANAGER 
+
+TWO IMPORTANT FILES IN ANSIBLE:
+
+1. INVENTORY FILE:
+    IT IS A FILE WHICH DEFINES THE HOST AND GROUP OF HOSTS THROUGH WHICH COMMANDS, MODULES & TASKS IN A PLAYBOOK OPERATE.
+    THE FORMAT CAN BE (INI) IS A CONFIG FILE FOR COMPUTER SOFTWARE & (YAML)
+      
+    PATH : HAVE TO FEED THE IP'S OF SLAVES IN MASTER ( /etc/ansible/hosts) 
+
+2. CONFIG FILE:
+       THIS FILE MAINTAINS ALL THE INTERACTIONS PERFORMED BY THE CONTROL NODE ( MASTER )
+
+       PATH : (/etc/ansible/ansible.cfg)
+
+THESE TWO FILES WILL BE AUTOMATICALLY CREATED WHEN ANSIBLE IS INSTALLED USING WITHOUT PIP METHOD.
+
+WHEN WE INSTALL ANSIBLE WITH PIP METHOD, WE HAVE TO CREATE THE INVENTORY FILE AS WELL AS CONFIG FILE.
+
+TASK :
+
+ANSIBLE INSTALLATION USING WITHOUT PIP METHOD.
+WHAT IS ANSIBLE-CORE AND HOW TO INSTALL ANSIBLE-CORE AND ANY USE CASE?
+
+LAUNCH 4 INSTANCES:
+
+USING BOOTSTRAP INSTALL PYTHON & PIP
+
+#! /bin/bash
+yum install python-pip -y
+
+
+CHECK WHETHER PYTHON IS INSTALLED USE --> ( python --version )
+
+INVENTORY FILE CREATION:
+
+Login into master machine using pagent - being default user, create a file (vi inventory.txt) - input all the slaves machines Private IP into it
+
+CONFIG FILE:
+To get ansbile config file, we can get from github link (https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg).
+Give command (wget https://raw.githubusercontent.com/ansible/ansible/devel/examples/ansible.cfg) - confirm the same by using command (ls -lrt)
+
+TO LOGIN INTO OUR SLAVE USING PAGEANT:
+(ssh ec2-user@public ip of slave)
+
+TO LOGIN INTO OUR SLAVE WITHOUT USING PAGEANT:
+(ssh -i "keypair name" ec2-user@pub ip of slave)
+
+WE CAN RUN ANSIBLE BY:
+1.ADHOC COMMANDS
+2.PLAYBOOK
+3.ROLES
+4.ANSIBLE TOWER ( ENTERPRISE VERSION SO PAYMENT IS TO BE DONE )
+-----------------------------------------------------------------
+adhoc commands:
+-ad hoc commands are great for tasks you repeat rarely
+-ad hoc tasks can be used to reboot servers, copy files, 
+ manage packages and users, and much more. 
+-You can use any Ansible module in an adhoc task.
+
+NOTE: WITHOUT KNOWING ANSIBLE MODULE WE CANNOT WORK IN ANSIBLE.
+
+1.To check the connection between master & slaves use ( ansible all -i slaves.txt -m ping ) [-i = Inventory file; -m = Ansible inbuild module]
+2.In order to know the Slaves machine OS, use this command (ansible all -i slaves.txt -a "uname -a") [-a = Action / Argument]
+3.To know when the Slaves server got started, use this command (ansible all -i slaves.txt -a "uptime")
+4.To copy file use (ansible all -i goutham.txt -m copy -a "src=./goutham.txt dest=/tmp/goutham.txt") [-a = allowed parameter]
+5.To install apache use (ansible all -i slaves.txt -m yum -a "name=httpd state=present" -b) [-b = become] { to become root user install apache }
+
+State:
+	1. present/latest = install
+	2. absent = uninstall
+	3. started = start
+	4. stopped = stop
+	5. restarted = restart
+
+6.To check whether my apache has started use (ansible all -i goutham.txt -m service -a "name=httpd state=started" -b)
+
+7.To unstall apache (ansible greens -i slaves.txt -m yum -a "name=httpd state=absent" -b)
+"msg": "Failed to connect to the host via ssh: Permission denied (publickey,gssapi-keyex,gssapi-with-mic)."
+
+8.adding user (ansible all -i slaves.txt -m user -a "name=goutham password=admin123" -b)
+
+9.to know the port number (ansible greens -i slave.txt -a "grep -i JENKINS_PORT /etc/sysconfig/jenkins" -b)
+
+10. to change the port number in play-book (ansible-playbook -i slave.txt handler.yaml -e "ports=9091")
+
+============================================================================================================
+                                     ad hoc commands
+                                     ===============
+                                    
+Where 
+-m = Module name
+-a = allow parameters
+-u = username
+
+
+ansible 127.0.0.1 -m file -a "dest=/opt/a.txt mode=600 state=touch"
+ansible 127.0.0.1 -m file -a "dest=/opt/a.txt mode=600 state=touch"
+ansible 127.0.0.1 -m file -a "dest=/opt/a.txt mode=600 state=touch owner=ec2-user"
+ansible 127.0.0.1 -m file -a "dest=/opt/b.txt mode=755 state=touch owner=ec2-user"
+ansible 127.0.0.1 -m file -a "dest=/opt/c.txt mode=755 state=touch owner=ec2-user"
+ansible 127.0.0.1 -m file -a "dest=/opt/bmc.txt mode=755 owner=ec2-user"
+
+ansible localhost -m file -a "dest=/opt/bmcdir mode=755 owner=ec2-user group=ec2-user state=directory"
+
+ansible 127.0.0.1 -m yum -a "name=httpd state=present"
+ansible 127.0.0.1 -m yum -a "name=httpd state=absent"
+
+ansible all -m service -a "name=httpd state=started"
+ansible 127.0.0.1 -m service -a "name=httpd state=stopped"
+
+ansible 127.0.0.1 -m command -a "/bin/yum update -y"
+ansible 127.0.0.1 -a "/bin/yum update -y"
+
+ansible 127.0.0.1 -m copy -a "src=/opt/index.html dest=/var/www/html/index.html"
+
+ansible 127.0.0.1 -m setup
+
+# Commands used in Hands-On-Ansible Mod5 Exercise 1
+
+# Install Apache
+$ ansible webservers -i inventory -m yum -a "name=httpd state=present" -b
+
+# Start Apache
+$ ansible webservers -i inventory -m service -a "name=httpd enabled=yes state=started" -b
+
+# Install MySQL
+$ ansible dbservers -i inventory -m yum -a "name=mysql-server state=present" -b
+
+# Start MySQL
+$ ansible dbservers -i inventory -m service -a "name=mysqld enabled=yes state=started" -b
+
+# Stop IPTables on all systems
+$ ansible webservers:dbservers -i inventory -m service -a "name=iptables enabled=no state=stopped" -b
+
+$ ansible servers -a "/sbin/reboot" 
+
+$ ansible all -m user -a "name=foo password="
+
+$ ansible webservers -m git -a "repo=https://foo.example.org/repo.git dest=/srv/myapp version=HEAD"
+
+$ ansible all -m user -a "name=foo state=absent"
+
+---------------------------------------------------------------------------------------------------------------
+
+Task:
+1. Install ansible in ubuntu without pip
+issues faced in ansible(interview questions)
+2. like pageant what you use in other linux based OS
+3. adhoc command without -i
+4. adhoc commands for file,directory 
+5. how to use ansible in windows environment.
+6. status check of apache
+
+
+
+https://www.puttygen.com/download-putty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

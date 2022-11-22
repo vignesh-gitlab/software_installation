@@ -1,0 +1,80 @@
+git token : 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
+
+
+    1  git --version
+    2  yum update -y
+    3  yum install git -y
+    4  git --version
+    5  git
+    6  pwd
+    7  mkdir git
+    8  cd git
+    9  pwd
+   10  nano test
+   11  ls
+   12  git status -s
+   13  git init
+   14  git status -s
+   15  ls -la
+   16  git status
+   17  git add test
+   18  git status -s
+   19  git rm --cached test
+   20  git status -s
+   21  git add test
+   22  git status -s
+   23  git status
+   24  git config -l
+   25  git config --global user.name "vignesh"
+   26  git config --global user.email "vigneshshivan6456@gmail.com"
+   27  git config -l
+   28  git commit -m "First Commit"
+   29  git status
+   30  git log
+   31  nano test
+   32  git status
+   33  git restore test
+   34  cat test
+   35  nano test
+   36  cat test
+   37  git add test
+   38  git status
+   39  git status -s
+   40  git restore --staged test
+   41  cat test
+   42  git status -s
+   43  git add test
+   44  git status -s
+   45  git status
+   46  git commit -m "Second Commit"
+   47  git log
+   48  git branch
+   49  git remote
+   50   git remote add origin https://github.com/vignesh-gitlab/test16sep.git
+   51  git remote
+   52  git push -u origin master
+   53  git log
+   54  git status
+   55  git branch dev
+   56  git branch
+   57  git log --oneline
+   58  git checkout dev
+   59  git branch
+   60  git log --oneline
+   61  nano test
+   62  git status -s
+   63  git add test
+   64  git status -s
+   65  git commit -m "Third Commit"
+   66  git log
+   67  git branch
+   68  git checkout master
+   69  git branch
+   70  git log
+   71  git merge dev
+   72  git log --oneline
+   73  git push -u origin master
+
+
+
+

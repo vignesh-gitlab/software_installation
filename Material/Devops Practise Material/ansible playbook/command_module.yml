@@ -1,0 +1,6 @@
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  tasks:
+   - name: Command Module
+     command: echo "Hello this is Command Module" > /tmp/command_file

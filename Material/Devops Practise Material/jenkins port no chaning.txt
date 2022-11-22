@@ -1,0 +1,13 @@
+
+Changing Jenkins Default Port_no:8080 to 9090:
+
+sudo vi /etc/sysconfig/jenkins
+
+sudo vi /lib/systemd/system/jenkins.service
+
+change from 8080 to  JENKINS_PORT=9090
+
+sudo lsof -i -P -n | grep LISTEN
+sudo service jenkins restart
+sudo systemctl daemon-reload
+sudo service jenkins restart

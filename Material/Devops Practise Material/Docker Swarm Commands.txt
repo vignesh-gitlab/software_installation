@@ -1,0 +1,131 @@
+Docker Swarm:
+A Docker Swarm is a group of either physical or virtual machines that are running the Docker application and that has been configured to join together in a cluster. Docker swarm is a container orchestration tool, meaning that it allows the user to manage multiple containers deployed across multiple host machines.
+
+Installation:
+Prerequisite :
+ Install and start docker on all nodes.
+
+Already Installed Docker have docker swarm(need to initialize):
+
+sudo docker 
+
+sudo docker swarm init --advertise-addr <172.31.37.63=docker_swarm_manager_private_ipaddress>
+
+Token Generated for Worker Node:
+docker swarm join --token SWMTKN-1-5dyyq29z7iigmcomwl5na6d0mqkrg8icbyi4fz7ysgb75edv8w-7q7is9nowtvmww7hhvkxwud6z 172.31.37.63:2377
+
+Token Generated for Worker Node as Manager:
+docker swarm join-token manager
+
+In Worker Node connect with  this token generated in master: 
+docker swarm join --token SWMTKN-1-5dyyq29z7iigmcomwl5na6d0mqkrg8icbyi4fz7ysgb75edv8w-7q7is9nowtvmww7hhvkxwud6z 172.31.37.63:2377
+
+To list the docker swarm connected nodes:
+ sudo docker node ls
+
+docker info
+
+sudo docker node --help
+
+To List Connected Node in Docker Swarm:
+sudo docker node ps
+
+sudo docker node update --help
+
+To list Running services in Docker Swarm Nodes:
+sudo docker service ls
+
+sudo docker service --help
+
+To Create a new service in replicas:
+sudo docker service create --replicas 2 -p 80:80 --name web1 httpd
+
+# replicas - how many copy of services to be run
+# web1 - name of the service
+# httpd - image pull from repository to create service.
+
+sudo docker service ls
+
+To list container application running on created Service:
+sudo docker service ps web1
+
+To Create a new service in all available nodes(global):
+docker service create --mode global -p 8081:8080 --name test tomcat
+
+To list the network available in docker:
+ sudo docker network ls
+   - ingress network created using overlay driver for docker swarm
+
+create new network in swarm:
+ docker network create -d overlay new_overlay
+ e.g. sudo docker service create --replicas 2 -p 80:80 --name web1 httpd --network new_overlay
+
+
+Scale Up and Scale Down in Docker Swarm:
+ -currently web1 running 2 , that scale up to 5
+ docker service scale web1=5
+ docker service ps web1
+ -currenntly web1 running 5 , that scale down to 1
+ docker service scale web1=1
+ docker service ps web1
+
+To Remove service:
+docker service rm web1
+
+Updating and Rolling Back:
+
+docker pull vignesh6456/mywebapp:0.0.2
+docker images
+docker service create --replicas 2 -p 8081:8080 --name web1 vignesh6456/mywebapp:0.0.2
+
+docker service ls
+docker service ps web1
+For Updating : 
+  docker service update --image vignesh6456/mywebapp:0.0.3 web1
+ docker service ps web1
+
+For RollBack :
+  docker service rollback web1
+ docker service ps web1
+
+Convert Manager to Worker Node or Worker Node to Manager :
+
+docker node ls
+docker node --help
+
+Promote workernode as Manager: (in this case 2 manager are available, manager fails other node act as manager)
+  docker node promote worker-node1
+ docker node ls
+
+  docker node promote worker-node2
+ docker node ls
+
+Convert manager to Worker node:
+  docker node demote  worker-node1
+ docker node ls
+
+  docker node demote  worker-node2
+ docker node ls
+
+Node Drain:
+docker node update --help
+
+Drain the workernode2 does not run any application now, application running on current node is moving to another available node.
+ docker node update --availability drain worker-node2
+ docker service ps web1
+ docker node ls
+
+Pause the current node do not allow any new application to run, existing application runs continously:
+   docker node update --availability pause worker-node1
+   docker service ps web1
+   docker node ls
+
+Active the pause, drain node into active mode:
+   docker node update --availability active worker-node2
+   docker service ps web1
+   docker node ls
+
+
+
+
+

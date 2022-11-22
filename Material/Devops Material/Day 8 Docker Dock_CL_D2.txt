@@ -1,0 +1,200 @@
+Docker Day2
+
+to delete all in one go
+--> docker container prune (delete all the stopped containers)
+
+=====================================================================================================
+A->How to update and backup an image<--
+
+
+step1->launching image to container
+	docker run -itd -p "8080:80" httpd
+
+step2->To enter container
+	docker exec -it CID /bin/bash
+
+	Check any tool present
+
+	git --version
+	vim
+	
+step-3>Now install git and vim in container
+	apt-get update
+	apt install git vim -y (install both git and vim)
+	git --version
+	exit (to come out from container)
+
+Now my container is deleted
+ 
+can i save the container as image??????
+(##interview question--> command for converting a container into images )
+
+step4-->docker commit CID (name of the image) myimage
+	image of the conatiner  named as myimage
+
+	docker commit CID (enter a image name)
+To check
+	docker images
+
+step5-->Back up in local and in cloud(online and local backup)
+=================================================================================================
+A.local
+   a.first geneter the image as tar file locally
+ 	--> ls -lrth
+	--> pwd
+	
+	-->docker save -o /root/myimagebackup.tar(anyname) myimage(ImageName)
+		(docker save --used to conver my image as tar)
+		(-o output where to save)
+	clear
+	Now im deleteing
+	#docker rmi myimage
+	#ls -lrth
+   b.how to convert the backup into image
+	#docker load -i myimagebackup.tar(backupfile name)
+=================================================================================================
+B.backup in remote(online)
+
+To do this we need to have docker account, to upload our image online
+
+step 1->Login to the docker locally in EC2
+	
+	#docker login
+	user name
+	password
+
+	#docker images
+  a.need to tag the myimage
+	--->"should follow this form" => username/imagename<---
+
+	#docker tag myimage username/nginxvimgit(newname to my cont)
+	#docker images
+	#docker tag myimage dineshdkr/myimagehttpd
+
+step 2->docker push username/nginxvimgit
+	(to push the image to docker hub)
+	#docker push dineshdkr/myimagehttpd
+step3 --> To pull image from online
+	#docker pull myimage ( from online)
+=================================================================================================
+for extra learning
+docker commands online
+=================================================================================================
+Docker File 
+
+---> Written instruciton to create our own customised image
+docker file should be saved as Dockerfile format(file will be saved in this name)
+
+-------------------------------------------------------------------------------------------------
+Step1 Create a Empty Dockerfile
+	# vi Dockerfile
+		(copy the following line in it)
+
+FROM ubuntu:22.04
+LABEL Name="Dinesh"
+RUN apt-get update 
+RUN apt install apache2 -y
+
+---------------------------------------------------------------------------------------------------
+Step2 Build image using following Docker command
+
+	# docker build -t(tag) newimage:v1 /root/opt/demo
+		(this command takes docker file automatically)
+	# docker images (new image will be created)
+		(tag is need to store multiple version of same image need to choose one base img
+===================================================================================================
+Step3 Update the exiting Docekr file
+ 
+From dockimg:v1
+LABEL Name="Dinesh"
+RUN  apt install vim -y
+RUN  apt install git -y
+
+	# vi Dockerfile
+paste here
+---------------------------------------------------------------------------------------------------
+Step4 Building the Updated Dockerfile
+
+	# docker build -t newimage:v2 /root/
+	# docker images 
+===================================================================================================
+"the diff btween two method 
+m1	image -> rn -> exce -yum/apt ->commit ->newimage
+m2	image -> dockerfile -> new image "
+------docker image prune -a 
+===================================================================================================
+
+Part -B what is itd
+------------------------------
+i -> input/interactive
+d --->detached
+t-->terminal
+------------------------------
+-detached-->
+
+	# docker run -p "80:80" httpd  ( terminal is connected with logs )
+	
+ 	#crt+c kill command
+  
+-interactive/input
+-------------------------------------------
+	# mkdir hi
+	# cd hi
+	# vi Dockerfile	
+ write the following docker file
+	FROM python:3
+	WORKDIR /usr/src/app
+	COPY test.py /usr/src/app 	
+	ENTRYPOINT python3 test.py
+--------------------------------------------------
+	# vi test.py
+
+	print("enter a name")
+	name = input()
+	print("hello", name)
+---------------------------------------------------
+
+test.py is file present in local, by using the COPY command
+we copy that test.py to image from local
+------------------------------------------------------
+from hi --> docker build -t mypython /root/hi/
+
+docker images
+
+-----------------------------------------------------
+-ternminal
+
+/bin/bash
+ bash commands
+
+Diff type is shell used to communicate with computer 
+
+a.shell 
+b.fish
+c.zshell
+
+(these all are runnning in interpretor and called as terminal)
+
+	#docker run -itd mypython(imgname)
+
+	docker exec -t conid /bin/bash
+
+ls -lrth
+pwd
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

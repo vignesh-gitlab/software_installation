@@ -1,0 +1,13 @@
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  tasks:
+   - name: Multiple File Creation
+     file:
+      path: "/tmp/vignesh/{{ item }}"
+      state: touch
+      mode: "0777"
+     loop:
+      - file1
+      - file2
+      - file3

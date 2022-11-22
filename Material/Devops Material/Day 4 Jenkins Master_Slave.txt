@@ -1,0 +1,55 @@
+
+Pre-Req for Master_Slave SetUp:
+
+
+1) Check the Status of the OpenSSH:
+sudo service ssh status
+
+
+2) Install Openssh-Server: [If not installed]
+sudo apt-get install openssh-server
+
+
+3) To connect to the SSH Server:
+ssh localhost
+
+
+4) Create two files:
+touch id_rsa
+touch id_rsa.pub
+
+
+5) Copy the Auth key to .pub file
+cat /home/ubuntu/.ssh/authorized_keys >> /home/ubuntu/.ssh/id_rsa.pub
+
+
+6) Copy the Private key [.pem] to the id_rsa file
+
+
+7) chmod 400 *
+============================================================================
+
+1) Choose Manage Jenkins
+
+2) Click on Manage Nodes and Clouds
+
+3) Click New Node
+
+4) Choose Node Name and Permanent Node
+
+5) Configure the Below for the Node,
+
+- # of executors
+- Update Remote root directory
+- Name a Labels
+- Usage - Use this Node as much as Possible
+- Launch Method
+- Add Hostname
+- Credentials
+- Manually Trusted Key Verificatio Strategy
+- Rest as Default
+
+
+
+
+

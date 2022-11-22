@@ -1,0 +1,46 @@
+Steps and Commands:
+
+(This assumes you have 3 servers up and running)
+
+1. On each server, install Docker
+(Installation guide: https://docs.docker.com/engine/instal...)
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install -y docker-ce
+
+2. On each server, install kubernetes
+(Installation guide: https://kubernetes.io/docs/setup/prod...)
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+
+3. On each server, enable the use of iptables 
+echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+4. On the Master server only, initialize the cluster
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+
+kubeadm join 172.31.8.91:6443 --token gy46r7.ebjtbw155fbzkdct \
+        --discovery-token-ca-cert-hash sha256:c8ca3f18147be70fdee5e999b0be590650a5262319893f56632602db0b71aeeb
+
+
+(After this command finishes, copy kubeadm join provided)
+
+5. On the Master server only, set up the kubernetes configuration file for general usage
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+
+6. On the Master server only, apply a common networking plugin. In this case, Flannel
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+7. On the Worker servers only, join them to the cluster using the command you copied earlier. 
+kubeadm join 172.31.37.80:6443 --token ... --discovery-token-ca-cert-hash ...
+
+And that's it! You should now have a working kubernetes cluster!
