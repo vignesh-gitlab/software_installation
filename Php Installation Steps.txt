@@ -1,0 +1,57 @@
+PHP Installation Steps:
+
+#!/bin/bash
+sudo apt update -y
+sudo apt install - apache2
+sudo add-apt-repository ppa:ondrej/php -y
+sudo apt update -y
+sudo apt install php8.1 -y
+sudo systemctl start apache2
+cd /var/www/html
+sudo mv index.html index-old.html
+sudo bash -c "echo '<?php phpinfo(); ?> > index.php"
+
+
+<html>
+<head>
+<title>Calculator</title>
+</head>
+<body>
+<form action="" method="post">
+Value1:<input type="text" name="value1"/>
+<br>
+Value2:<input type="text" name="value2"/>
+<br><br>
+<input type="submit" name="submit" value="Add">
+</form>
+<?php
+if(isset($_POST['submit']))
+{
+$value1= $_POST['value1'];
+$value2= $_POST['value2'];
+$total = $value1+$value2;
+echo "The Sun of values1 and value2 is".$total;
+}
+?>
+</body>
+</html>
+
+
+
+<?php
+$favcolor = "red";
+
+switch ($favcolor) {
+  case "red":
+    echo "Your favorite color is red!";
+    break;
+  case "blue":
+    echo "Your favorite color is blue!";
+    break;
+  case "green":
+    echo "Your favorite color is green!";
+    break;
+  default:
+    echo "Your favorite color is neither red, blue, nor green!";
+}
+?>
