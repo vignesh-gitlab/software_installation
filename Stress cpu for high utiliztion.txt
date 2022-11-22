@@ -1,0 +1,13 @@
+Log in into your AWS EC2 Amazon Linux Instance
+SSH Login into your AWS EC2 Amazon Linux Instance
+
+Install EPEL repository on Amazon Linux
+$ sudo amazon-linux-extras install epel -y
+
+Install stress with YUM package manager
+$ sudo yum install stress -y
+
+Linux Stress usage example:
+
+# stress --cpu 8 --io 4 --vm 2 --vm-bytes 128M --timeout 400s
+- 400s cpu utilization is hign
